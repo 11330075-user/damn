@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>114-2 學習載具預約資料登錄系統</title>
+    <style>
+        body { font-family: 'PingFang TC', Arial, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 650px; background: white; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
+        .section-title { font-weight: bold; font-size: 16px; color: #5f6368; border-left: 4px solid #1a73e8; padding-left: 8px; margin: 25px 0 15px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        input:focus, select:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; }
+        .checkbox-label { display: flex; align-items: center; font-size: 13px; font-weight: normal; cursor: pointer; }
+        .checkbox-label input { width: auto; margin-right: 6px; }
+        button { width: 100%; padding: 14px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s; }
+        button:hover { background-color: #1557b0; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>114-2 學習載具預約資料表單</h2>
+    <form id="bookingForm">
+        
+        <div class="form-group">
+            <label>電子郵件地址 *</label>
+            <input type="email" id="email" required placeholder="example@school.edu.tw">
+        </div>
+
+        <div class="form-group">
+            <label>是否已詳細閱讀並同意上方注意事項？ *</label>
+            <select id="agree_rules" required>
+                <option value="我已詳細閱讀並同意上述規定">我已詳細閱讀並同意上述規定</option>
+            </select>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>借用教師姓名 *</label>
+                <input type="text" id="teacher_name" required placeholder="如：王小明">
+            </div>
+            <div class="form-group">
+                <label>聯絡分機或電話(辦公室or專科教室or手機) *</label>
+                <input type="text" id="phone" required placeholder="專科教室/手機/分機">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>使用情境</label>
+                <input type="text" id="context" placeholder="如：課堂教學、公開授課">
+            </div>
+            <div class="form-group">
+                <label>課程名稱</label>
+                <input type="text" id="course_name" placeholder="如：英文、數學">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>使用班級</label>
+                <input type="text" id="class_name" placeholder="如：701, 802">
+            </div>
+            <div class="form-group">
+                <label>使用地點</label>
+                <input type="text" id="location" placeholder="如：一年一班教室">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>預約類型 *</label>
+            <select id="booking_type" required onchange="toggleBookingType()">
+                <option value="單次預約">單次預約</option>
+                <option value="週期預約">週期預約</option>
+            </select>
+        </div>
+
+        <div id="single_block">
+            <div class="section-title">單次預約詳情</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>借用日期</label>
+                    <input type="date" id="single_date">
+                </div>
+                <div class="form-group">
+                    <label>借用節次</label>
+                    <input type="text" id="single_period" placeholder="如：1, 2 或 午, 5">
+                </div>
+            </div>
+        </div>
+
+        <div id="period_block" class="hidden">
+            <div class="section-title">週期預約詳情</div>
+            <div class="form-group">
+                <label>是否已詳閱並同意「週期預約注意事項」？</label>
+                <select id="agree_period">
+                    <option value="">-- 請選擇 --</option>
+                    <option value="是">是</option>
+                </select>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>起始日期</label>
+                    <input type="date" id="start_date">
+                </div>
+                <div class="form-group">
+                    <label>結束日期</label>
+                    <input type="date" id="end_date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>每週借用節次（複選）</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="1">第 1 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="2">第 2 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="3">第 3 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="4">第 4 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="午">午休</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="5">第 5 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="6">第 6 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="7">第 7 節</label>
+                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="8">第 8 節</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>排除日期</label>
+                <input type="text" id="exclude_date" placeholder="如：段考週不借、5/20排除">
+            </div>
+        </div>
+
+        <div class="section-title">載具與取用資訊</div>
+        
+        <div class="grid-2">
+            <div class="form-group">
+                <label>載具類型 *</label>
+                <select id="device_type" required>
+                    <option value="iPad">iPad</option>
+                    <option value="Chromebook">Chromebook</option>
+                    <option value="SurfaceGo">SurfaceGo</option>
+                    <option value="Acer筆電">Acer筆電</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>需求數量(填數字就好，不用單位) *</label>
+                <input type="number" id="quantity" required placeholder="如：30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>其他特殊需求</label>
+            <textarea id="special_needs" rows="2" placeholder="無特殊需求可不填"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>預計取用人員</label>
+            <input type="text" id="pickup_person" placeholder="如：資訊股長自取、老師自取">
+        </div>
+
+        <button type="submit">提交預約資料</button>
+    </form>
+</div>
+
+<script>
+    function toggleBookingType() {
+        const type = document.getElementById('booking_type').value;
+        if (type === '單次預約') {
+            document.getElementById('single_block').classList.remove('hidden');
+            document.getElementById('period_block').classList.add('hidden');
+        } else {
+            document.getElementById('single_block').classList.add('hidden');
+            document.getElementById('period_block').classList.remove('hidden');
+        }
+    }
+
+    document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // 收集勾選的週節次（如果有勾選就填入該節次名稱，沒勾選就留空，完全匹配 CSV 特性）
+        let weeksData = {};
+        document.querySelectorAll('input[name="weeks"]').forEach(cb => {
+            weeksData[`week_${cb.value}`] = cb.checked ? `第 ${cb.value} 節` : '';
+        });
+
+        const formData = {
+            email: document.getElementById('email').value,
+            agree_rules: document.getElementById('agree_rules').value,
+            teacher_name: document.getElementById('teacher_name').value,
+            phone: document.getElementById('phone').value,
+            context: document.getElementById('context').value,
+            course_name: document.getElementById('course_name').value,
+            class_name: document.getElementById('class_name').value,
+            location: document.getElementById('location').value,
+            booking_type: document.getElementById('booking_type').value,
+            single_date: document.getElementById('single_date').value,
+            single_period: document.getElementById('single_period').value,
+            agree_period: document.getElementById('agree_period').value,
+            start_date: document.getElementById('start_date').value,
+            end_date: document.getElementById('end_date').value,
+            ...weeksData,
+            exclude_date: document.getElementById('exclude_date').value,
+            device_type: document.getElementById('device_type').value,
+            quantity: document.getElementById('quantity').value,
+            special_needs: document.getElementById('special_needs').value,
+            pickup_person: document.getElementById('pickup_person').value
+        };
+
+        // 修改你原本 index.html 裡的 fetch 區段：
+try {
+    const response = await fetch('', {  // 留空代表發送到當前網址
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}' // Django 的安全機制防護
+        },
+        body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+        alert('🎉 預約成功！系統已自動扣減對應車次數量。');
+        // 自動跳轉到新產生的資料表格網頁
+        window.location.href = `/success/${result.booking_id}/`; 
+    } else {
+        alert('預約失敗：' + result.message);
+    }
+} catch (error) {
+    alert('連線錯誤，請檢查 Django 伺服器狀態。');
+}
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>預約確認資料表</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 40px; }
+        .receipt { max-width: 700px; background: white; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; width: 30%; font-weight: bold; }
+        .highlight { background-color: #e8f4fd; font-weight: bold; color: #2980b9; }
+        .btn-group { text-align: center; margin-top: 30px; }
+        .btn { padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="receipt">
+    <h2>🎉 學習載具預約確認表單 (已存檔)</h2>
+    <table>
+        <tr><th>借用教師</th><td>{{ booking.teacher_name }} (分機: {{ booking.phone }})</td></tr>
+        <tr><th>電子郵件</th><td>{{ booking.email }}</td></tr>
+        <tr><th>使用情境/課程</th><td>{{ booking.context }} / {{ booking.course_name }}</td></tr>
+        <tr><th>班級/地點</th><td>{{ booking.class_name }} / {{ booking.location }}</td></tr>
+        <tr><th>預約類型</th><td>{{ booking.booking_type }}</td></tr>
+        {% if booking.booking_type == '單次預約' %}
+            <tr><th>借用日期與節次</th><td>{{ booking.single_date }} 第 {{ booking.single_period }} 節</td></tr>
+        {% else %}
+            <tr><th>週期區間</th><td>{{ booking.start_date }} ~ {{ booking.end_date }}</td></tr>
+            <tr><th>每週固定節次</th><td>{% for p in periods %}{{ p }} {% endfor %}</td></tr>
+            <tr><th>排除日期</th><td>{{ booking.exclude_date }}</td></tr>
+        {% endif %}
+        <tr><th>需求載具</th><td class="highlight">{{ booking.device_type }} - 共 {{ booking.required_quantity }} 台</td></tr>
+        <tr>
+            <th>系統自動配車明細</th>
+            <td>
+                {% for detail in details %}
+                    <div>🔹 扣除 <strong>{{ detail.inventory.cart_name }}</strong>： {{ detail.borrowed_qty }} 台</div>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr><th>取用人員</th><td>{{ booking.pickup_person }}</td></tr>
+        <tr><th>填報時間</th><td>{{ booking.created_at|date:"Y-m-d H:i:s" }}</td></tr>
+    </table>
+    <div class="btn-group">
+        <a href="{% url 'booking_form' %}" class="btn">返回繼續預約</a>
+    </div>
+</div>
+</body>
+</html>

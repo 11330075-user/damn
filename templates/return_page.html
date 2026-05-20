@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>學習載具歸還管理系統</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f3f4; padding: 30px; }
+        .container { max-width: 900px; background: white; margin: 0 auto; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: #c0392b; border-bottom: 2px solid #c0392b; padding-bottom: 10px; }
+        .booking-card { border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin-bottom: 15px; background: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .info-box strong { color: #2c3e50; font-size: 16px; }
+        .details-text { font-size: 13px; color: #7f8c8d; margin-top: 5px; }
+        .return-btn { background: #27ae60; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .return-btn:hover { background: #219653; }
+        .no-data { text-align: center; color: #95a5a6; padding: 40px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🔄 學習載具歸還處理網頁</h2>
+    <p>以下為目前「借用中」的載具清單。點擊綠色按鈕後，各車次的庫存數量將會自動釋放歸還。</p>
+    
+    {% if bookings %}
+        {% for booking in bookings %}
+            <div class="booking-card">
+                <div class="info-box">
+                    <strong>👤 {{ booking.teacher_name }} 老師 — 借用【{{ booking.device_type }}】共 {{ booking.required_quantity }} 台</strong>
+                    <div class="details-text">
+                        📅 類型：{{ booking.booking_type }} | 📱 預計取用：{{ booking.pickup_person }} <br>
+                        🚗 配車扣除明細：
+                        {% for detail in booking.details.all %}
+                            [{{ detail.inventory.cart_name }}: {{ detail.borrowed_qty }}台] 
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <form method="POST" onsubmit="return confirm('確定要辦理此筆載具歸還，並補回庫存嗎？');">
+                        {% csrf_token %}
+                        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                        <button type="submit" class="return-btn">確認歸還 ✓</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-data">🎉 目前所有載具均已歸還，沒有借用中的紀錄。</div>
+    {% endif %}
+</div>
+</body>
+</html>
