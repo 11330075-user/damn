@@ -27,6 +27,7 @@
 <div class="container">
     <h2>114-2 學習載具預約資料表單</h2>
     <form id="bookingForm">
+        {% csrf_token %}
         
         <div class="form-group">
             <label>電子郵件地址 *</label>
@@ -83,58 +84,124 @@
 
         <div id="single_block">
             <div class="section-title">單次預約詳情</div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>借用日期</label>
-                    <input type="date" id="single_date">
-                </div>
-                <div class="form-group">
-                    <label>借用節次</label>
-                    <input type="text" id="single_period" placeholder="如：1, 2 或 午, 5">
+            <div class="form-group">
+                <label>借用日期</label>
+                <input type="date" id="single_date">
+            </div>
+            <div class="form-group">
+                <label>借用節次區間 *</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="start_period" style="width: 45%;">
+                        <option value="">選擇開始節次</option>
+                        <option value="1">第一節</option>
+                        <option value="2">第二節</option>
+                        <option value="3">第三節</option>
+                        <option value="4">第四節</option>
+                        <option value="4.5">午休</option>
+                        <option value="5">第五節</option>
+                        <option value="6">第六節</option>
+                        <option value="7">第七節</option>
+                        <option value="8">第八節</option>
+                    </select>
+                    <span>至</span>
+                    <select id="end_period" style="width: 45%;">
+                        <option value="">選擇結束節次</option>
+                        <option value="1">第一節</option>
+                        <option value="2">第二節</option>
+                        <option value="3">第三節</option>
+                        <option value="4">第四節</option>
+                        <option value="4.5">午休</option>
+                        <option value="5">第五節</option>
+                        <option value="6">第六節</option>
+                        <option value="7">第七節</option>
+                        <option value="8">第八節</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <div id="period_block" class="hidden">
-            <div class="section-title">週期預約詳情</div>
-            <div class="form-group">
-                <label>是否已詳閱並同意「週期預約注意事項」？</label>
-                <select id="agree_period">
-                    <option value="">-- 請選擇 --</option>
-                    <option value="是">是</option>
-                </select>
-            </div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>起始日期</label>
-                    <input type="date" id="start_date">
-                </div>
-                <div class="form-group">
-                    <label>結束日期</label>
-                    <input type="date" id="end_date">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>每週借用節次（複選）</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="1">第 1 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="2">第 2 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="3">第 3 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="4">第 4 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="午">午休</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="5">第 5 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="6">第 6 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="7">第 7 節</label>
-                    <label class="checkbox-label"><input type="checkbox" name="weeks" value="8">第 8 節</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>排除日期</label>
-                <input type="text" id="exclude_date" placeholder="如：段考週不借、5/20排除">
-            </div>
+       <div id="period_block" class="hidden">
+    <div class="section-title">週期預約詳情</div>
+    <div class="form-group">
+        <label>是否已詳閱並同意「週期預約注意事項」？</label>
+        <select id="agree_period">
+            <option value="">-- 請選擇 --</option>
+            <option value="是">是</option>
+        </select>
+    </div>
+    <div class="grid-2">
+        <div class="form-group">
+            <label>起始日期</label>
+            <input type="date" id="start_date">
         </div>
+        <div class="form-group">
+            <label>結束日期</label>
+            <input type="date" id="end_date">
+        </div>
+    </div>
 
-        <div class="section-title">載具與取用資訊</div>
+    <div class="form-group">
+        <label>每週借用節次（可複選）</label>
+        <div class="checkbox-group" style="grid-template-columns: repeat(3, 1fr);">
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_1">週一 第 1 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_2">週一 第 2 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_3">週一 第 3 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_4">週一 第 4 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_4.5">週一 午休</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_5">週一 第 5 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_6">週一 第 6 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_7">週一 第 7 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Mon_8">週一 第 8 節</label>
+            
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_1">週二 第 1 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_2">週二 第 2 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_3">週二 第 3 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_4">週二 第 4 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_4.5">週二 午休</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_5">週二 第 5 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_6">週二 第 6 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_7">週二 第 7 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Tue_8">週二 第 8 節</label>
+
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_1">週三 第 1 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_2">週三 第 2 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_3">週三 第 3 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_4">週三 第 4 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_4.5">週三 午休</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_5">週三 第 5 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_6">週三 第 6 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_7">週三 第 7 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Wed_8">週三 第 8 節</label>
+
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_1">週四 第 1 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_2">週四 第 2 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_3">週四 第 3 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_4">週四 第 4 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_4.5">週四 午休</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_5">週四 第 5 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_6">週四 第 6 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_7">週四 第 7 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Thu_8">週四 第 8 節</label>
+
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_1">週五 第 1 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_2">週五 第 2 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_3">週五 第 3 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_4">週五 第 4 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_4.5">週五 午休</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_5">週五 第 5 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_6">週五 第 6 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_7">週五 第 7 節</label>
+            <label class="checkbox-label"><input type="checkbox" name="weeks" value="Fri_8">週五 第 8 節</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>排除日期</label>
+        <input type="text" id="exclude_date" placeholder="如：段考週不借、5/20排除">
+    </div>
+</div>
+
+<div class="section-title">載具與取用資訊</div>
         
         <div class="grid-2">
             <div class="form-group">
@@ -143,11 +210,11 @@
                     <option value="iPad">iPad</option>
                     <option value="Chromebook">Chromebook</option>
                     <option value="SurfaceGo">SurfaceGo</option>
-                    <option value="Acer筆電">Acer筆電</option>
+                    <option value="Acer">Acer小筆電</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>需求數量(填數字就好，不用單位) *</label>
+                <label>需求數量(填數字) *</label>
                 <input type="number" id="quantity" required placeholder="如：30">
             </div>
         </div>
@@ -180,12 +247,36 @@
 
     document.getElementById('bookingForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+// 🔍 請在你的表單 submit 監聽器內，找到 weeksData 的打包邏輯，改成以下這段：
 
-        // 收集勾選的週節次（如果有勾選就填入該節次名稱，沒勾選就留空，完全匹配 CSV 特性）
-        let weeksData = {};
-        document.querySelectorAll('input[name="weeks"]').forEach(cb => {
-            weeksData[`week_${cb.value}`] = cb.checked ? `第 ${cb.value} 節` : '';
-        });
+// 自動根據當前是星期幾，或者把勾選的節次打包
+let weeksData = {};
+document.querySelectorAll('input[name="weeks"]').forEach(cb => {
+    if (cb.checked) {
+        // 如果你的表單只有選第幾節，我們預設幫它綁定到週會或需要上課的標籤
+        // 為了完美支援，我們把勾選的欄位直接送出：
+        weeksData[`week_${cb.value}`] = cb.value;
+    }
+});
+
+        // 驗證單次預約時的節次大小關係
+        const bookingType = document.getElementById('booking_type').value;
+        let startPeriod = 0;
+        let endPeriod = 0;
+
+        if (bookingType === '單次預約') {
+            startPeriod = parseFloat(document.getElementById('start_period').value);
+            endPeriod = parseFloat(document.getElementById('end_period').value);
+            
+            if (!startPeriod || !endPeriod) {
+                alert('請選擇完整的開始與結束節次！');
+                return;
+            }
+            if (startPeriod > endPeriod) {
+                alert('開始節次不能大於結束節次，請重新選擇。');
+                return;
+            }
+        }
 
         const formData = {
             email: document.getElementById('email').value,
@@ -196,9 +287,13 @@
             course_name: document.getElementById('course_name').value,
             class_name: document.getElementById('class_name').value,
             location: document.getElementById('location').value,
-            booking_type: document.getElementById('booking_type').value,
+            booking_type: bookingType,
             single_date: document.getElementById('single_date').value,
-            single_period: document.getElementById('single_period').value,
+            
+            // 🔹 傳送給後端做防衝堂判斷的欄位 🔹
+            start_period: startPeriod,
+            end_period: endPeriod,
+            
             agree_period: document.getElementById('agree_period').value,
             start_date: document.getElementById('start_date').value,
             end_date: document.getElementById('end_date').value,
@@ -210,28 +305,32 @@
             pickup_person: document.getElementById('pickup_person').value
         };
 
-        // 修改你原本 index.html 裡的 fetch 區段：
-try {
-    const response = await fetch('', {  // 留空代表發送到當前網址
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}' // Django 的安全機制防護
-        },
-        body: JSON.stringify(formData)
-    });
+        // 🌟 核心修正：動態從網具表單中提取 Django 剛剛生成的 CSRF Token 貼進 Header
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    const result = await response.json();
-    if (response.ok) {
-        alert('🎉 預約成功！系統已自動扣減對應車次數量。');
-        // 自動跳轉到新產生的資料表格網頁
-        window.location.href = `/success/${result.booking_id}/`; 
-    } else {
-        alert('預約失敗：' + result.message);
-    }
-} catch (error) {
-    alert('連線錯誤，請檢查 Django 伺服器狀態。');
-}
+        try {
+            const response = await fetch('', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // 👈 帶上正牌的 Token 傳給後端
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('🎉 預約成功！系統已為您排程指派未占用的載具。');
+                // 自動前往產生的新表格網頁
+                window.location.href = `/success/${result.booking_id}/`;
+            } else {
+                // 處理衝堂或借滿時的回傳訊息
+                alert('⚠️ 申請失敗：' + result.message);
+            }
+        } catch (error) {
+            alert('連線失敗！請確保 Django 伺服器正在運行(runserver)。');
+        }
     });
 </script>
 </body>

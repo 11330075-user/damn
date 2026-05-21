@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <title>預約確認資料表</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 40px; }
-        .receipt { max-width: 700px; background: white; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        body { font-family: 'PingFang TC', Arial, sans-serif; background: #f4f7f6; padding: 40px; margin: 0; }
+        .receipt { max-width: 700px; background: white; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { color: #1a73e8; text-align: center; border-bottom: 2px solid #1a73e8; padding-bottom: 15px; margin-top: 0; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f8f9fa; width: 30%; font-weight: bold; }
-        .highlight { background-color: #e8f4fd; font-weight: bold; color: #2980b9; }
+        th, td { border: 1px solid #ddd; padding: 14px; text-align: left; font-size: 15px; }
+        th { background-color: #f8f9fa; width: 30%; font-weight: bold; color: #495057; }
+        td { color: #333; }
+        .highlight { background-color: #e8f4fd; font-weight: bold; color: #1a73e8; }
+        .assignment-box { background: #f1f3f4; padding: 10px; border-radius: 6px; margin-top: 5px; }
         .btn-group { text-align: center; margin-top: 30px; }
-        .btn { padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .btn { padding: 12px 24px; background: #1a73e8; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.2s; }
+        .btn:hover { background: #1557b0; }
     </style>
 </head>
 <body>
@@ -24,22 +27,35 @@
         <tr><th>使用情境/課程</th><td>{{ booking.context }} / {{ booking.course_name }}</td></tr>
         <tr><th>班級/地點</th><td>{{ booking.class_name }} / {{ booking.location }}</td></tr>
         <tr><th>預約類型</th><td>{{ booking.booking_type }}</td></tr>
-        {% if booking.booking_type == '單次預約' %}
-            <tr><th>借用日期與節次</th><td>{{ booking.single_date }} 第 {{ booking.single_period }} 節</td></tr>
-        {% else %}
-            <tr><th>週期區間</th><td>{{ booking.start_date }} ~ {{ booking.end_date }}</td></tr>
-            <tr><th>每週固定節次</th><td>{% for p in periods %}{{ p }} {% endfor %}</td></tr>
-            <tr><th>排除日期</th><td>{{ booking.exclude_date }}</td></tr>
-        {% endif %}
-        <tr><th>需求載具</th><td class="highlight">{{ booking.device_type }} - 共 {{ booking.required_quantity }} 台</td></tr>
+        
         <tr>
-            <th>系統自動配車明細</th>
+    <th>借用時間與節次</th>
+    <td>
+        {% if booking.booking_type == '單次預約' %}
+            📅 單次：{{ booking.single_date }} (第 {{ booking.start_period }} 節 至 第 {{ booking.end_period }} 節)
+        {% else %}
+            🗓️ 週期：{{ booking.start_date }} 至 {{ booking.end_date }} <br>
+            ⏱️ 每週固定借用節次：
+            {% for p in periods %}
+                <span style="background: #e8f0fe; padding: 3px 8px; border-radius: 4px; margin-right: 5px; font-size: 13px;">第 {{ p }} 節</span>
+            {% endfor %}
+        {% endif %}
+    </td>
+</tr>
+        
+        <tr><th>需求載具</th><td class="highlight">{{ booking.device_type }} - 共 {{ booking.required_quantity }} 台</td></tr>
+        
+        <tr>
+            <th>系統動態指派結果</th>
             <td>
-                {% for detail in details %}
-                    <div>🔹 扣除 <strong>{{ detail.inventory.cart_name }}</strong>： {{ detail.borrowed_qty }} 台</div>
+                {% for assign in assignments %}
+                    <div class="assignment-box">🚗 自動指派 <strong>{{ assign.inventory.cart_name }}</strong>：分配 {{ assign.assigned_qty }} 台</div>
+                {% empty %}
+                    <div style="color: red;">未分配到任何載具</div>
                 {% endfor %}
             </td>
         </tr>
+        
         <tr><th>取用人員</th><td>{{ booking.pickup_person }}</td></tr>
         <tr><th>填報時間</th><td>{{ booking.created_at|date:"Y-m-d H:i:s" }}</td></tr>
     </table>
