@@ -105,14 +105,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# 🚀 請修改為以下設定：
+LANGUAGE_CODE = 'zh-Hant'  # 將後端管理介面改為繁體中文
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Taipei'  # 🌟 關鍵：將時區切換為台北時間 (UTC+8)
 
 USE_I18N = True
 
-USE_TZ = True
-
+USE_TZ = False             # 🌟 關鍵：關閉 UTC 強制轉換，讓 Django 直接使用本地時間寫入資料庫
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
